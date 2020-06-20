@@ -3,21 +3,14 @@ package pl.coderslab.workshop;
 import java.sql.*;
 
 public class DBUtil {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/workshop2?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "coderslab";
 
     public static Connection connect() {
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/products_ex?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8", "root", "");
-        } catch (SQLException sql) {
-            sql.printStackTrace();
-        }
-        return conn;
-    }
-
-    public static Connection connect(String dbName) {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName + "?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8", "root", "");
+            conn = DriverManager.getConnection(DB_URL,DB_USER,DB_PASS);
         } catch (SQLException sql) {
             sql.printStackTrace();
         }
