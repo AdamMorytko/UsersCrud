@@ -49,6 +49,7 @@ public class UserDao {
             if (resultSet.next()) {
                 user.setId(resultSet.getInt(1));
             }
+            System.out.println("User created succesfully.");
             return user;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,6 +84,7 @@ public class UserDao {
             statement.setString(3, this.hashPassword(user.getPassword()));
             statement.setInt(4, user.getId());
             statement.executeUpdate();
+            System.out.println("User updated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,6 +100,7 @@ public class UserDao {
             PreparedStatement statement = conn.prepareStatement(DELETE_USER_QUERY);
             statement.setInt(1, userId);
             statement.executeUpdate();
+            System.out.println("Succesfully deleted user with id: "+userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
