@@ -1,5 +1,7 @@
 package pl.coderslab.workshop;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 import java.sql.*;
 
 public class DBUtil {
@@ -10,22 +12,27 @@ public class DBUtil {
     public static Connection connect() {
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(DB_URL,DB_USER,DB_PASS);
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
         } catch (SQLException sql) {
             sql.printStackTrace();
         }
         return conn;
     }
 
-    public static int insert(Connection conn, String sql, String... params) {
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+    public static int insert(Connection conn, String sql, String... params) throws MySQLIntegrityConstraintViolationException {
+        try (PreparedStatement statement = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setString(i + 1, params[i]);
             }
-            return statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                System.out.println("Inserted ID: " + id);
+                return id;
+            }else return 0;
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
-            return -1;
+            return 0;
         }
     }
 
@@ -48,7 +55,7 @@ public class DBUtil {
                 statement.setString(i + 1, params[i]);
             }
             ResultSet resultSet = statement.executeQuery();
-            for (int i = 0; i < columns.length; i++){
+            for (int i = 0; i < columns.length; i++) {
                 if (i != 0) {
                     System.out.print(";");
                 }
